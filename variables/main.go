@@ -4,18 +4,26 @@ import (
 	"bufio"	
 	"fmt"
 	"os"
+	"math/rand"
+	"time"
 )
 
 const stringRepeat = "and press enter once you are done."
 
 func main() {
-	var firstNumber = 2
-	var secondNumber = 5
-	var subtraction = 7
-	var answer int
+	// seed the random number generator
+	rand.Seed(time.Now().UnixNano())
+	var firstNumber = rand.Intn(8)
+	var secondNumber = rand.Intn(8)
+	var subtraction = rand.Intn(8)
+	answer := firstNumber * secondNumber - subtraction
+	
+	//---------------------------------------------------
+	numbRand( answer, firstNumber, secondNumber, subtraction )
+}
 
+func numbRand( answer, firstNumber, secondNumber, subtraction int){
 	reader := bufio.NewReader(os.Stdin)
-
 	//display a welcome/instructions\
 	fmt.Println("Guess the number game")
 	fmt.Println("----------------------")
@@ -36,6 +44,6 @@ func main() {
 	fmt.Println("Now subtract:", subtraction, stringRepeat)
 	//give them the answer
 
-	answer = firstNumber * secondNumber - subtraction
+	
 	fmt.Println("The answer is", answer)
 }
