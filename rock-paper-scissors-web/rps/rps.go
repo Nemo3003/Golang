@@ -1,49 +1,87 @@
 package rps
 
-import(
+import (
 	"math/rand"
 	"time"
 )
 
 const (
-	ROCK     = 0
-	PAPER    = 1
-	SCISSORS = 2
-	PLAYERWINS   = 1
-	COMPUTERWINS = 2
-	DRAW 		 = 3
+	ROCK     = 0 // beats scissors. (scissors + 1) % 3 = 0
+	PAPER    = 1 // beats rock. (rock + 1) % 3 = 1
+	SCISSORS = 2 // beats paper. (paper + 1) % 3 = 2
+
 )
 
-func PlayRound(PlayerValue int)(int, string, string){
+type Round struct {
+
+	Message        string `json:"message"`
+	ComputerChoice string `json:"computer_choice"`
+	RoundResult    string `json:"round_result"`
+}
+
+var winMessages = []string{
+	"Good job!",
+	"Nice work!",
+	"You should buy a lottery ticket",
+}
+
+var loseMessages = []string{
+	"Too bad!",
+	"Try again!",
+	"This is just not your day.",
+}
+
+var drawMessages = []string{
+	"Great minds think alike.",
+	"Uh oh. Try again.",
+	"Nobody wins, but you can try again.",
+}
+
+func PlayRound(playerValue int) Round {
 	rand.Seed(time.Now().UnixNano())
 	computerValue := rand.Intn(3)
-	ComputerChoice := ""
+	computerChoice := ""
 	roundResult := ""
-	winner := 0
 
 	switch computerValue {
 	case ROCK:
-		ComputerChoice = "Computer choice ROCKS"
+		computerChoice = "Computer chose ROCK"
 		break
 	case PAPER:
-		ComputerChoice = "Computer choice PAPER"
+		computerChoice = "Computer chose PAPER"
 		break
 	case SCISSORS:
-		ComputerChoice = "Computer choice SCISSORS"
+		computerChoice = "Computer chose SCISSORS"
 		break
 	default:
 	}
 
-	if PlayerValue == computerValue {
+	// *** generate a random number from 0-2, which we use to pick a random message
+	messageInt := rand.Intn(3)
+	// *** declare a var to hold the message
+	message := ""
+
+	if playerValue == computerValue {
 		roundResult = "It's a draw"
-		winner = DRAW
-	} else if PlayerValue == (computerValue+1)%3 {
+		//winner = DRAW
+		// *** populate message from drawMessages
+		message = drawMessages[messageInt]
+	} else if playerValue == (computerValue+1)%3 {
 		roundResult = "Player wins!"
-		winner = PLAYERWINS
+		//winner = PLAYERWINS
+		// *** populate message from winMessages
+		message = winMessages[messageInt]
 	} else {
 		roundResult = "Computer wins!"
-		winner = COMPUTERWINS
+		//winner = COMPUTERWINS
+		// *** populate message from loseMessages
+		message = loseMessages[messageInt]
 	}
 
-	return winner, ComputerChoice, roundResult
+	var result Round
+	// *** change to use message instead of Winner
+	result.Message = message
+	result.ComputerChoice = computerChoice
+	result.RoundResult = roundResult
+	return result
 }
